@@ -16,7 +16,7 @@ class HiloHorno extends Thread {
     }
     
     public synchronized boolean meterGalletasHorno(int cantidad, String nombreRepostero) {        
-        while (galletasHorno > 0 || horneando || retirandoGalletas) {
+        while (galletasHorno > 0 || horneando) {
             try {
                 if (galletasHorno > 0 || horneando) {
                     System.out.println(nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad);
@@ -32,16 +32,13 @@ class HiloHorno extends Thread {
             int desperdicio = cantidad - espacioDisponible;
             galletasHorno = capacidad;
             System.out.println(nombreRepostero + " desperdicia "+ desperdicio + " galletas al intentar llenar el " + id_horno);
-
-            //notifyAll();
-            //return true;
         } else {
             galletasHorno += cantidad;
         }
         
         System.out.println(nombreRepostero + " deja " + cantidad + " galletas en " + id_horno + ". Total en horno: " + galletasHorno);
         
-        if (galletasHorno == capacidad) {
+        if (galletasHorno == capacidad && !horneando) {
             horneando = true;
             notifyAll();
         }
@@ -92,8 +89,8 @@ class HiloHorno extends Thread {
                 ie.printStackTrace();
             }
         }
-        System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el " + id_horno);
         galletasHorno  -= cantidad;
+        System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el " + id_horno);
         
         if (galletasHorno == 0) {
             notifyAll();
