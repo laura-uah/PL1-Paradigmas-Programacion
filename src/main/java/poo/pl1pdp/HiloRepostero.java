@@ -17,10 +17,6 @@ class HiloRepostero extends Thread {
     public int cocinarGalletas() {
         int numGalletas = 35 + (int)(9*Math.random());
         return numGalletas;
-        
-        
-        
-        
     }
     
     public void run() {
