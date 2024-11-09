@@ -4,8 +4,10 @@ package poo.pl1pdp;
 class HiloHorno extends Thread {
     private String id_horno;
     private int capacidad;
-    private String nombreRepostero;
     private int galletasHorno = 0;
+    private boolean horneando = false;
+    private boolean retirandoGalletas = false;
+
     
     //Constructor
     public HiloHorno (String id_horno, int capacidad) {
@@ -13,41 +15,40 @@ class HiloHorno extends Thread {
         this.capacidad = capacidad;
     }
     
-    public synchronized boolean meterGalletasHorno(int cantidad, String nombreRepostero) {
-        this.nombreRepostero = nombreRepostero;
+    public synchronized boolean meterGalletasHorno(int cantidad, String nombreRepostero) {        
+        while (galletasHorno > 0 || horneando || retirandoGalletas) {
+            try {
+                if (galletasHorno > 0 || horneando) {
+                    System.out.println(nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad);
+                }
+                wait();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+        }
         int espacioDisponible = capacidad - galletasHorno;
         
         if (cantidad > espacioDisponible) {
             int desperdicio = cantidad - espacioDisponible;
             galletasHorno = capacidad;
             System.out.println(nombreRepostero + " desperdicia "+ desperdicio + " galletas al intentar llenar el " + id_horno);
-            System.out.println(nombreRepostero + " deja " + cantidad + " galletas en " + id_horno + ". Total en horno: " + galletasHorno);
-            
-            notifyAll();
-            return true;
+
+            //notifyAll();
+            //return true;
         } else {
             galletasHorno += cantidad;
-            System.out.println(nombreRepostero + " deja " + cantidad + " galletas en " + id_horno + ". Total en horno: " + galletasHorno);
-            if (galletasHorno == capacidad) {
-                notifyAll();
-            }
-            return true;
         }
-    }
-    
-    public synchronized boolean retirarGalletasHorno(int cantidad, String id_empaquetador) {
-        while (galletasHorno < cantidad) {
-            try {
-                wait();
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
+        
+        System.out.println(nombreRepostero + " deja " + cantidad + " galletas en " + id_horno + ". Total en horno: " + galletasHorno);
+        
+        if (galletasHorno == capacidad) {
+            horneando = true;
+            notifyAll();
         }
-        galletasHorno  -= cantidad;
-        System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el horno. ");
-        notifyAll();
         return true;
     }
+    
+    
     
     public void run() {
         try {
@@ -56,9 +57,13 @@ class HiloHorno extends Thread {
                     while (galletasHorno < capacidad) {
                         wait();
                     }
+                    hornear();
                 }
-                hornear();
+                
                 synchronized (this) {
+                    horneando = false;
+                    retirandoGalletas = true;
+                    System.out.println(id_horno + " se ha vaciado despues del horneado. ");
                     galletasHorno = 0;
                     notifyAll();
                 }
@@ -78,7 +83,21 @@ class HiloHorno extends Thread {
         }
     }
     
-    
-    
-    
+    public synchronized boolean retirarGalletasHorno(int cantidad, String id_empaquetador) {
+        while (galletasHorno < cantidad || horneando) {
+            try {
+                System.out.println(id_empaquetador + " espera para retirar " + cantidad + " galletas del " + id_horno);
+                wait();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+        }
+        System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el " + id_horno);
+        galletasHorno  -= cantidad;
+        
+        if (galletasHorno == 0) {
+            notifyAll();
+        }
+        return true;
+    }  
 }
