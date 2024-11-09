@@ -20,33 +20,20 @@ class HiloEmpaquetador extends Thread {
             int numGalletasEmpaquetar = 100;
             
             while (true) {
-                synchronized (horno) {
-                    horno.retirarGalletasHorno(cantidad, id_empaquetador);
+                if (horno.retirarGalletasHorno(cantidad, id_empaquetador)) {
+                    numGalletasRecolectadas += cantidad;
                     int tiempoRetirarGalletas = 500 + (int)(500*Math.random());
                     Thread.sleep(tiempoRetirarGalletas);
-                    numGalletasRecolectadas += cantidad;
+                    
                     if (numGalletasRecolectadas == numGalletasEmpaquetar) {
                         System.out.println(id_empaquetador + " ha empaquetado un lote de " + numGalletasEmpaquetar + " galletas.");
+                        synchronized (almacen) {
+                            almacen.almacenarGalletas(numGalletasEmpaquetar, id_empaquetador);
+                        }
+                        numGalletasRecolectadas = 0;
                     }  
                 }
-                boolean depositadoA = false;
-                                     
-                    while(!depositadoA) {
-                        synchronized (almacen) {
-                            if (almacen.almacenarGalletas(numGalletasEmpaquetar, id_empaquetador)) {
-                                depositadoA = true;
-                                break;
-                            }
-                        }
-                        if (!depositadoA) {
-                            System.out.println(id_empaquetador + " está esperando a que haya sitio en el almacén. ");
-                            almacen.wait();
-                            //Thread.sleep(500);
-                        }
-                    }            
-            }
-            
-                
+            }                    
         } catch (InterruptedException ie) {
                 ie.printStackTrace();
         }        

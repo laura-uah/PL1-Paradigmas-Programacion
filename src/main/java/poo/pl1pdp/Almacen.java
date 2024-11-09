@@ -14,7 +14,9 @@ class Almacen {
             galletasAlmacenadas += paqueteGalletas;
             System.out.println(id_empaquetador + " almacena " + paqueteGalletas + " galletas. Total en almacén: " + galletasAlmacenadas);
             notifyAll();
-        } return true;
+            return true;
+        } 
+        return false;
     }
     
     //BOTÓN COMER GALLETAS

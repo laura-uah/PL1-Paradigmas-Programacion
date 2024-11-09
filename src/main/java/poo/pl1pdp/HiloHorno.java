@@ -13,8 +13,10 @@ class HiloHorno extends Thread {
         this.capacidad = capacidad;
     }
     
-    public synchronized boolean meterGalletasHorno(int cantidad, String nombreRespostero) {
+    public synchronized boolean meterGalletasHorno(int cantidad, String nombreRepostero) {
+        this.nombreRepostero = nombreRepostero;
         int espacioDisponible = capacidad - galletasHorno;
+        
         if (cantidad > espacioDisponible) {
             int desperdicio = cantidad - espacioDisponible;
             galletasHorno = capacidad;
@@ -32,6 +34,21 @@ class HiloHorno extends Thread {
         }
     }
     
+    public synchronized boolean retirarGalletasHorno(int cantidad, String id_empaquetador) {
+        while (galletasHorno < cantidad) {
+            try {
+                System.out.println(id_empaquetador + " esperando a que haya suficientes galletas en " + id_horno);
+                wait();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+        }
+        galletasHorno  -= cantidad;
+        System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el horno. ");
+        notifyAll();
+        return true;
+    }
+    
     public void run() {
         try {
             while (true){
@@ -43,6 +60,7 @@ class HiloHorno extends Thread {
                 hornear();
                 synchronized (this) {
                     galletasHorno = 0;
+                    notifyAll();
                 }
             }
         } catch (InterruptedException ie) {
@@ -60,13 +78,7 @@ class HiloHorno extends Thread {
         }
     }
     
-    public synchronized void retirarGalletasHorno(int cantidad, String id_empaquetador) {
-        while (galletasHorno >= cantidad) {
-            galletasHorno  -= cantidad;
-            System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el horno. ");
-            notifyAll();
-        } 
-    }
+    
     
     
 }
