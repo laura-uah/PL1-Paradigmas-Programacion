@@ -19,14 +19,14 @@ class HiloHorno extends Thread {
             int desperdicio = cantidad - espacioDisponible;
             galletasHorno = capacidad;
             System.out.println(nombreRepostero + " desperdicia "+ desperdicio + " galletas al intentar llenar el " + id_horno);
-            System.out.println(nombreRepostero + " deja "+ espacioDisponible + " galletas en " + id_horno + ". Total en horno: " + galletasHorno);
-            notify();
+            System.out.println(nombreRepostero + " deja " + espacioDisponible + " galletas en " + id_horno + ". Total en horno: " + galletasHorno);
+            notifyAll();
             return true;
         } else {
             galletasHorno += cantidad;
-            System.out.println(nombreRepostero + " deja "+ espacioDisponible + " galletas en " + id_horno + ". Total en horno: " + galletasHorno);
+            System.out.println(nombreRepostero + " deja " + espacioDisponible + " galletas en " + id_horno + ". Total en horno: " + galletasHorno);
             if (galletasHorno == capacidad) {
-                notify();
+                notifyAll();
             }
             return true;
         }
@@ -59,4 +59,14 @@ class HiloHorno extends Thread {
             ie.printStackTrace();
         }
     }
+    
+    public synchronized void retirarGalletasHorno(int cantidad, String id_empaquetador) {
+        while (galletasHorno >= cantidad) {
+            galletasHorno  -= cantidad;
+            System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el horno. ");
+            notifyAll();
+        } 
+    }
+    
+    
 }

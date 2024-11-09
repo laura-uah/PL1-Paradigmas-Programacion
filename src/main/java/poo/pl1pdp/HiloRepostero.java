@@ -32,19 +32,11 @@ class HiloRepostero extends Thread {
                     Thread.sleep(tiempoHacerGalletas);
                     System.out.println(id_repostero + " produce la tanda " + (i+1) + "/" + tandas + " con " + numGalletas + " galletas.");
                     
-                    //boolean depositado = false;
-                    
-                    synchronized (horno) {
-                        horno.meterGalletasHorno(numGalletas, id_repostero);
-                    }
-                    
-                    //HORNO DISPONIBLE
-                    
-                    
-                    /*
+                    boolean depositado = false;
+                                     
                     while(!depositado) {
                         synchronized (horno) {
-                            if ()) {
+                            if (horno.meterGalletasHorno(numGalletas, id_repostero)) {
                                 depositado = true;
                                 break;
                             }
@@ -53,7 +45,7 @@ class HiloRepostero extends Thread {
                             System.out.println(id_repostero + " está esperando a un horno disponible. ");
                             Thread.sleep(500);
                         }
-                    }*/
+                    }
                 }
                 synchronized (cafetera) {
                     cafetera.prepararCafe(id_repostero);

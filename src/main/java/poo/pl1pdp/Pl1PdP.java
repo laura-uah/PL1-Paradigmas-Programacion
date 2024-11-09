@@ -6,7 +6,7 @@ public class Pl1PdP {
     public static void main(String[] args) {
         // Declarar objetos compartidos
         Cafetera cafetera = new Cafetera();
-        Almacen almacen = new Almacen();
+        Almacen almacen = new Almacen(1000);
         
         // Declarar hilo Horno
         HiloHorno horno = new HiloHorno("Horno1", 200);
@@ -28,7 +28,7 @@ public class Pl1PdP {
         
         
         // Declarar hilo Empaquetador
-        HiloEmpaquetador emp = new HiloEmpaquetador("Empaquetador1", almacen);
+        HiloEmpaquetador emp = new HiloEmpaquetador("Empaquetador1", almacen, horno);
 
         /*
         for (i=0; i<3; i++) {
