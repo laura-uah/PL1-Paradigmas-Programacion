@@ -15,7 +15,7 @@ class HiloRepostero extends Thread {
     
     //Función que cocina un número de galletas entre 37 y 45
     public int cocinarGalletas() {
-        int numGalletas = 35 + (int)(9*Math.random());
+        int numGalletas = 37 + (int)(9*Math.random());
         return numGalletas;
     }
     
@@ -32,10 +32,19 @@ class HiloRepostero extends Thread {
                     Thread.sleep(tiempoHacerGalletas);
                     System.out.println(id_repostero + " produce la tanda " + (i+1) + "/" + tandas + " con " + numGalletas + " galletas.");
                     
-                    boolean depositado = false;
+                    //boolean depositado = false;
+                    
+                    synchronized (horno) {
+                        horno.meterGalletasHorno(numGalletas, id_repostero);
+                    }
+                    
+                    //HORNO DISPONIBLE
+                    
+                    
+                    /*
                     while(!depositado) {
                         synchronized (horno) {
-                            if (horno.meterGalletasHorno(numGalletas, id_repostero)) {
+                            if ()) {
                                 depositado = true;
                                 break;
                             }
@@ -44,11 +53,12 @@ class HiloRepostero extends Thread {
                             System.out.println(id_repostero + " está esperando a un horno disponible. ");
                             Thread.sleep(500);
                         }
-                    }
+                    }*/
                 }
                 synchronized (cafetera) {
                     cafetera.prepararCafe(id_repostero);
                 }
+                
                 //Descansar
                 int tiempoDescanso = (int)(3000+6000*Math.random());
                 Thread.sleep(tiempoDescanso);

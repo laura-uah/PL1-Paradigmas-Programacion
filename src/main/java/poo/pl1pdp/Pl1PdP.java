@@ -10,7 +10,7 @@ public class Pl1PdP {
         
         // Declarar hilo Horno
         HiloHorno horno = new HiloHorno("Horno1", 200);
-
+        
         /*
         for (i=0; i<3; i++) {
             Repostero rep = new Repostero(i+1);
@@ -27,9 +27,8 @@ public class Pl1PdP {
         */
         
         
-        
         // Declarar hilo Empaquetador
-        HiloEmpaquetador emp = new HiloEmpaquetador("Empaqutador1", almacen);
+        HiloEmpaquetador emp = new HiloEmpaquetador("Empaquetador1", almacen);
 
         /*
         for (i=0; i<3; i++) {
