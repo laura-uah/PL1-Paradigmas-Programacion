@@ -17,5 +17,5 @@ class Almacen {
         } return true;
     }
     
-    
+    //BOTÓN COMER GALLETAS
 }
