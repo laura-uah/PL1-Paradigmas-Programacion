@@ -16,6 +16,14 @@ class HiloHorno extends Thread {
         this.capacidad = capacidad;
     }
     
+    public boolean estaLleno() {
+        return galletasHorno == capacidad;
+    }
+    
+    public boolean estaVacio() {
+        return galletasHorno == 0;
+    }
+    
     public synchronized boolean meterGalletasHorno(int cantidad, String nombreRepostero) {        
         while (!vacio || horneando || empaquetando) {
             try {

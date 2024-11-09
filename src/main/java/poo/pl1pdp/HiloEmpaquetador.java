@@ -20,24 +20,41 @@ class HiloEmpaquetador extends Thread {
             int numGalletasEmpaquetar = 100;
             
             while (true) {
-                if (horno.retirarGalletasHorno(cantidad, id_empaquetador)) {
-                    numGalletasRecolectadas += cantidad;
-                    int tiempoRetirarGalletas = 500 + (int)(500*Math.random());
-                    Thread.sleep(tiempoRetirarGalletas);
-                    
-                    if (numGalletasRecolectadas == numGalletasEmpaquetar) {
-                        System.out.println(id_empaquetador + " ha empaquetado un lote de " + numGalletasEmpaquetar + " galletas.");
-                        synchronized (almacen) {
-                            almacen.almacenarGalletas(numGalletasEmpaquetar, id_empaquetador);
+                /*synchronized (horno) {
+                    while (!horno.estaVacio()) {
+                        System.out.println(id_empaquetador + " espera a que el horno esté vacio para retirar las galletas. ");
+                        horno.wait();
+                    }
+                }*/
+                
+                
+                synchronized (horno) {
+                    //while (!horno.estaVacio()) {
+                        if (horno.retirarGalletasHorno(cantidad, id_empaquetador)) {
+                            numGalletasRecolectadas += cantidad;
+                            int tiempoRetirarGalletas = 500 + (int)(500*Math.random());
+                            Thread.sleep(tiempoRetirarGalletas);
+
+                            if (numGalletasRecolectadas == numGalletasEmpaquetar) {
+                                System.out.println(id_empaquetador + " ha empaquetado un lote de " + numGalletasEmpaquetar + " galletas.");
+
+                                synchronized (almacen) {
+                                    almacen.almacenarGalletas(numGalletasEmpaquetar, id_empaquetador);
+                                }
+                                numGalletasRecolectadas -= numGalletasEmpaquetar;
+                            }  
                         }
-                        numGalletasRecolectadas = 0;
-                    }  
+
+                        if (numGalletasRecolectadas <= numGalletasEmpaquetar) {
+                            System.out.println(id_empaquetador + " sigue recolectando galletas. Recolectadas: " + numGalletasRecolectadas);
+                        }
+                    //}
+                    
                 }
+                
             }                    
         } catch (InterruptedException ie) {
                 ie.printStackTrace();
         }        
-    }
-    
-    
+    } 
 }
