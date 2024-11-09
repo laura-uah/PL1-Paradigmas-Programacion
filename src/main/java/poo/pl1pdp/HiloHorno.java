@@ -6,7 +6,8 @@ class HiloHorno extends Thread {
     private int capacidad;
     private int galletasHorno = 0;
     private boolean horneando = false;
-    private boolean retirandoGalletas = false;
+    private boolean vacio = true;
+    private boolean empaquetando = false;
 
     
     //Constructor
@@ -16,12 +17,12 @@ class HiloHorno extends Thread {
     }
     
     public synchronized boolean meterGalletasHorno(int cantidad, String nombreRepostero) {        
-        while (galletasHorno > 0 || horneando) {
+        while (!vacio || horneando || empaquetando) {
             try {
-                if (galletasHorno > 0 || horneando) {
+                //if (!vacio) {
                     System.out.println(nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad);
-                }
-                wait();
+                    wait();
+                //}    
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
@@ -40,6 +41,7 @@ class HiloHorno extends Thread {
         
         if (galletasHorno == capacidad && !horneando) {
             horneando = true;
+            vacio = false;
             notifyAll();
         }
         return true;
@@ -59,10 +61,15 @@ class HiloHorno extends Thread {
                 
                 synchronized (this) {
                     horneando = false;
-                    retirandoGalletas = true;
-                    System.out.println(id_horno + " se ha vaciado despues del horneado. ");
-                    galletasHorno = 0;
+                    empaquetando = true;
                     notifyAll();
+                }
+                
+                synchronized (this) {
+                    while (galletasHorno > 0) {
+                        wait();
+                    }
+                    vacio = true;
                 }
             }
         } catch (InterruptedException ie) {
@@ -83,7 +90,11 @@ class HiloHorno extends Thread {
     public synchronized boolean retirarGalletasHorno(int cantidad, String id_empaquetador) {
         while (galletasHorno < cantidad || horneando) {
             try {
-                System.out.println(id_empaquetador + " espera para retirar " + cantidad + " galletas del " + id_horno);
+                //if (galletasHorno == 0) {
+                    System.out.println(id_empaquetador + " espera para retirar " + cantidad + " galletas del " + id_horno);
+                /*} else if (horneando) {
+                    System.out.println(id_empaquetador + " espera a que el " + id_horno + " termine de hornear. ");
+                }*/
                 wait();
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
@@ -93,6 +104,7 @@ class HiloHorno extends Thread {
         System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el " + id_horno);
         
         if (galletasHorno == 0) {
+            empaquetando = false;
             notifyAll();
         }
         return true;
