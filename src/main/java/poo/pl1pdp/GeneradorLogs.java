@@ -6,16 +6,15 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 public class GeneradorLogs {
-    private static Logger logger = Logger.getLogger("GalletasLog");
+    private static Logger logger = Logger.getLogger("GalletasLog");                         //Instancia de Logger para almacenar eventos.
 
     static {
-        try {
-            // Configuramos el archivo donde se guardarán los logs
-            FileHandler fileHandler = new FileHandler("Operaciones_galletas.log", true);
-            SimpleFormatter formatter = new SimpleFormatter();
-            fileHandler.setFormatter(formatter);
+        try {// Configuramos el archivo donde se guardarán los logs.
+            FileHandler fileHandler = new FileHandler("Operaciones_galletas.log", true);    //true para generar nuevos logs en vez de sobreescribirlo.
+            SimpleFormatter formatter = new SimpleFormatter();                              //Para agregar un formato a los logs.
+            fileHandler.setFormatter(formatter);                                            
             logger.addHandler(fileHandler);
-            logger.setUseParentHandlers(false); // Evita que imprima en consola
+            logger.setUseParentHandlers(false);                                             //Evita que imprima en consola.
         } catch (IOException e) {
             e.printStackTrace();
         }
