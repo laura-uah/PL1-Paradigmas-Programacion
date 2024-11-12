@@ -4,7 +4,6 @@ package poo.pl1pdp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 class HiloRepostero extends Thread {
     private HiloHorno horno;
     private Cafetera cafetera;
@@ -22,7 +21,7 @@ class HiloRepostero extends Thread {
         int numGalletas = 37 + (int)(9*Math.random());
         return numGalletas;
     }
-
+    
     //Función para el formato de fecha
     private String obtenerMarcaDeTiempo() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -36,30 +35,26 @@ class HiloRepostero extends Thread {
                 for (int i = 0; i < tandas; i++) {
                     //Cocinar galletas
                     int numGalletas = cocinarGalletas();
-
+                    
                     //Tiempo que tardan las galletas en cocinarse
                     int tiempoHacerGalletas = ((int)(2000+(2000*Math.random())));
                     Thread.sleep(tiempoHacerGalletas);
                     //Logs
-                    LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " produce la tanda " + (i + 1) + "/" + tandas + " con " + numGalletas + " galletas.");
-                    
-                    
+                    GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " produce la tanda " + (i + 1) + "/" + tandas + " con " + numGalletas + " galletas.");
+                                        
                     boolean depositado = false;
                                      
                     while(!depositado) {
                         synchronized (horno) {
                             if (horno.meterGalletasHorno(numGalletas, id_repostero)) {
-                                //Logs
-                                LogHandler.log(id_repostero + " deja " + numGalletas + " galletas en " + horno.getId());
                                 depositado = true;
                                 break;
                             }
                         }
                         if (!depositado) {
                             //Logs
-                            LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " está esperando a un horno disponible.");
-                            
-                            Thread.sleep(500);
+                            GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " está esperando a un horno disponible.");
+                                                        Thread.sleep(500);
                         }
                     }
                 }
@@ -70,7 +65,7 @@ class HiloRepostero extends Thread {
                 //Descansar
                 int tiempoDescanso = (int)(3000+6000*Math.random());
                 //Logs
-                LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " se toma un descanso de " + tiempoDescanso / 1000 + " segundos.")
+                GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " se toma un descanso de " + tiempoDescanso / 1000 + " segundos.");
                 Thread.sleep(tiempoDescanso);
             }
         } catch (InterruptedException ie) {
