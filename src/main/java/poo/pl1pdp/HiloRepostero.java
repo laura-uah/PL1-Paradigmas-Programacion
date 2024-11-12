@@ -1,6 +1,10 @@
 
 package poo.pl1pdp;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
 class HiloRepostero extends Thread {
     private HiloHorno horno;
     private Cafetera cafetera;
@@ -18,6 +22,12 @@ class HiloRepostero extends Thread {
         int numGalletas = 37 + (int)(9*Math.random());
         return numGalletas;
     }
+
+    //Función para el formato de fecha
+    private String obtenerMarcaDeTiempo() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(new Date());
+    }
     
     public void run() {
         try {            
@@ -26,12 +36,12 @@ class HiloRepostero extends Thread {
                 for (int i = 0; i < tandas; i++) {
                     //Cocinar galletas
                     int numGalletas = cocinarGalletas();
-                    
+
                     //Tiempo que tardan las galletas en cocinarse
                     int tiempoHacerGalletas = ((int)(2000+(2000*Math.random())));
                     Thread.sleep(tiempoHacerGalletas);
                     //Logs
-                    LogHandler.log(id_repostero + " produce la tanda " + (i + 1) + "/" + tandas + " con " + numGalletas + " galletas.");
+                    LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " produce la tanda " + (i + 1) + "/" + tandas + " con " + numGalletas + " galletas.");
                     
                     
                     boolean depositado = false;
@@ -47,7 +57,7 @@ class HiloRepostero extends Thread {
                         }
                         if (!depositado) {
                             //Logs
-                            LogHandler.log(id_repostero + " está esperando a un horno disponible.");
+                            LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " está esperando a un horno disponible.");
                             
                             Thread.sleep(500);
                         }
@@ -60,7 +70,7 @@ class HiloRepostero extends Thread {
                 //Descansar
                 int tiempoDescanso = (int)(3000+6000*Math.random());
                 //Logs
-                LogHandler.log(id_repostero + " se toma un descanso de " + tiempoDescanso / 1000 + " segundos.")
+                LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_repostero + " se toma un descanso de " + tiempoDescanso / 1000 + " segundos.")
                 Thread.sleep(tiempoDescanso);
             }
         } catch (InterruptedException ie) {
