@@ -1,6 +1,9 @@
 
 package poo.pl1pdp;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 class Almacen {
     private static int capacidadAlmacen;
     private int galletasAlmacenadas;
@@ -9,7 +12,7 @@ class Almacen {
         this.capacidadAlmacen = capacidadAlmacen;
         this.galletasAlmacenadas = 0;
     }
-
+    
     // Método para obtener la marca de tiempo
     private String obtenerMarcaDeTiempo() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -28,10 +31,11 @@ class Almacen {
         galletasAlmacenadas += paqueteGalletas;
         System.out.println(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " almacena " + paqueteGalletas + " galletas. Total en almacén: " + galletasAlmacenadas);
         notifyAll();  // Notifica a los empaquetadores en espera de que se pueden almacenar más galletas
-        return true
+        return true;
     }
-
+    
+    
+    
     
     //BOTÓN COMER GALLETAS
-    
 }
