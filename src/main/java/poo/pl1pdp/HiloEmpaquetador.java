@@ -1,6 +1,11 @@
 
 package poo.pl1pdp;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
+
 class HiloEmpaquetador extends Thread {
     private String id_empaquetador;
     private Almacen almacen;
@@ -12,7 +17,12 @@ class HiloEmpaquetador extends Thread {
         this.almacen = almacen;
         this.horno = horno;
     }
-    
+
+    // Función para el formato de fecha
+    private String obtenerMarcaDeTiempo() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(new Date());
+    }
     public void run() {
         try {
             int cantidad = 20;
@@ -36,11 +46,11 @@ class HiloEmpaquetador extends Thread {
                             Thread.sleep(tiempoRetirarGalletas);
 
                             //Logs
-                            LogHandler.log(id_empaquetador + " retira " + cantidad + " galletas del " + horno.getId() + ". Total recolectadas: " + numGalletasRecolectadas);
+                            LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " retira " + cantidad + " galletas del " + horno.getId() + ". Total recolectadas: " + numGalletasRecolectadas);
 
                             if (numGalletasRecolectadas == numGalletasEmpaquetar) {
                                 //Logs
-                                LogHandler.log(id_empaquetador + " ha empaquetado un lote de " + numGalletasEmpaquetar + " galletas.");
+                                LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " ha empaquetado un lote de " + numGalletasEmpaquetar + " galletas.");
                                 synchronized (almacen) {
                                     almacen.almacenarGalletas(numGalletasEmpaquetar, id_empaquetador);
                                 }
