@@ -1,6 +1,10 @@
 
 package poo.pl1pdp;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
 class HiloHorno extends Thread {
     private String id_horno;
     private int capacidad;
@@ -14,6 +18,12 @@ class HiloHorno extends Thread {
     public HiloHorno (String id_horno, int capacidad) {
         this.id_horno = id_horno;
         this.capacidad = capacidad;
+    }
+
+    // Función para el formato de fecha
+    private String obtenerMarcaDeTiempo() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(new Date());
     }
     
     public boolean estaLleno() {
@@ -29,7 +39,7 @@ class HiloHorno extends Thread {
             try {
                 //if (!vacio) {
                     //Logs
-                    LogHandler.log(nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad + " galletas.");
+                    LogHandler.log(obtenerMarcaDeTiempo() + " - " + nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad + " galletas.");
                     wait();
                 //}    
             } catch (InterruptedException ie) {
@@ -42,7 +52,7 @@ class HiloHorno extends Thread {
             int desperdicio = cantidad - espacioDisponible;
             galletasHorno = capacidad;
             //Logs
-            LogHandler.log(nombreRepostero + " desperdicia " + desperdicio + " galletas al intentar llenar el " + id_horno);
+            LogHandler.log(obtenerMarcaDeTiempo() + " - " + nombreRepostero + " desperdicia " + desperdicio + " galletas al intentar llenar el " + id_horno);
         } else {
             galletasHorno += cantidad;
         }
@@ -90,10 +100,10 @@ class HiloHorno extends Thread {
     private void hornear() {
         try {
             //Logs
-            LogHandler.log(id_horno + " está horneando " + capacidad + " galletas.");
+            LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_horno + " está horneando " + capacidad + " galletas.");
             Thread.sleep(8000);
             //Logs
-            LogHandler.log(id_horno + " ha terminado de hornear " + capacidad + " galletas.");
+            LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_horno + " ha terminado de hornear " + capacidad + " galletas.");
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
@@ -103,7 +113,8 @@ class HiloHorno extends Thread {
         while (galletasHorno < cantidad || horneando) {
             try {
                 //if (galletasHorno == 0) {
-                    System.out.println(id_empaquetador + " espera para retirar " + cantidad + " galletas del " + id_horno);
+                //Logs
+                LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " espera para retirar " + cantidad + " galletas del " + id_horno);
                 /*} else if (horneando) {
                     System.out.println(id_empaquetador + " espera a que el " + id_horno + " termine de hornear. ");
                 }*/
@@ -113,7 +124,7 @@ class HiloHorno extends Thread {
             }
         }
         galletasHorno  -= cantidad;
-        System.out.println(id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el " + id_horno);
+        LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el " + id_horno);
         
         if (galletasHorno == 0) {
             empaquetando = false;
