@@ -14,7 +14,6 @@ public class GeneradorLogs {
             SimpleFormatter formatter = new SimpleFormatter();                              //Para agregar un formato a los logs.
             fileHandler.setFormatter(formatter);                                            
             logger.addHandler(fileHandler);
-            logger.setUseParentHandlers(false);                                             //Evita que imprima en consola.
         } catch (IOException e) {
             e.printStackTrace();
         }
