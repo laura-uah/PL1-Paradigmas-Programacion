@@ -28,7 +28,8 @@ class HiloHorno extends Thread {
         while (!vacio || horneando || empaquetando) {
             try {
                 //if (!vacio) {
-                    System.out.println(nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad);
+                    //Logs
+                    LogHandler.log(nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad + " galletas.");
                     wait();
                 //}    
             } catch (InterruptedException ie) {
@@ -40,7 +41,8 @@ class HiloHorno extends Thread {
         if (cantidad > espacioDisponible) {
             int desperdicio = cantidad - espacioDisponible;
             galletasHorno = capacidad;
-            System.out.println(nombreRepostero + " desperdicia "+ desperdicio + " galletas al intentar llenar el " + id_horno);
+            //Logs
+            LogHandler.log(nombreRepostero + " desperdicia " + desperdicio + " galletas al intentar llenar el " + id_horno);
         } else {
             galletasHorno += cantidad;
         }
@@ -87,9 +89,11 @@ class HiloHorno extends Thread {
     
     private void hornear() {
         try {
-            System.out.println(id_horno + " está horneando " + capacidad + " galletas.");
+            //Logs
+            LogHandler.log(id_horno + " está horneando " + capacidad + " galletas.");
             Thread.sleep(8000);
-            System.out.println(id_horno + " ha terminado de hornear " + capacidad + " galletas.");
+            //Logs
+            LogHandler.log(id_horno + " ha terminado de hornear " + capacidad + " galletas.");
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
