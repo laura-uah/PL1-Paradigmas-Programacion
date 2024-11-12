@@ -30,19 +30,25 @@ class HiloRepostero extends Thread {
                     //Tiempo que tardan las galletas en cocinarse
                     int tiempoHacerGalletas = ((int)(2000+(2000*Math.random())));
                     Thread.sleep(tiempoHacerGalletas);
-                    System.out.println(id_repostero + " produce la tanda " + (i+1) + "/" + tandas + " con " + numGalletas + " galletas.");
+                    //Logs
+                    LogHandler.log(id_repostero + " produce la tanda " + (i + 1) + "/" + tandas + " con " + numGalletas + " galletas.");
+                    
                     
                     boolean depositado = false;
                                      
                     while(!depositado) {
                         synchronized (horno) {
                             if (horno.meterGalletasHorno(numGalletas, id_repostero)) {
+                                //Logs
+                                LogHandler.log(id_repostero + " deja " + numGalletas + " galletas en " + horno.getId());
                                 depositado = true;
                                 break;
                             }
                         }
                         if (!depositado) {
-                            System.out.println(id_repostero + " está esperando a un horno disponible. ");
+                            //Logs
+                            LogHandler.log(id_repostero + " está esperando a un horno disponible.");
+                            
                             Thread.sleep(500);
                         }
                     }
@@ -53,6 +59,8 @@ class HiloRepostero extends Thread {
                 
                 //Descansar
                 int tiempoDescanso = (int)(3000+6000*Math.random());
+                //Logs
+                LogHandler.log(id_repostero + " se toma un descanso de " + tiempoDescanso / 1000 + " segundos.")
                 Thread.sleep(tiempoDescanso);
             }
         } catch (InterruptedException ie) {
