@@ -25,7 +25,7 @@ public class Pl1PdP {
             Repostero rep = new Repostero(i+1, cafetera);
         }
         */
-        
+    
         
         // Declarar hilo Empaquetador
         HiloEmpaquetador emp = new HiloEmpaquetador("Empaquetador1", almacen, horno);
