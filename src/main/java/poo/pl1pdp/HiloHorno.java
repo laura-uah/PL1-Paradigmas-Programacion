@@ -4,7 +4,6 @@ package poo.pl1pdp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 class HiloHorno extends Thread {
     private String id_horno;
     private int capacidad;
@@ -19,7 +18,7 @@ class HiloHorno extends Thread {
         this.id_horno = id_horno;
         this.capacidad = capacidad;
     }
-
+    
     // Función para el formato de fecha
     private String obtenerMarcaDeTiempo() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -34,14 +33,19 @@ class HiloHorno extends Thread {
         return galletasHorno == 0;
     }
     
+    public String getIdHorno (HiloHorno horno) {
+        return horno.id_horno;
+    }
+    
     public synchronized boolean meterGalletasHorno(int cantidad, String nombreRepostero) {        
         while (!vacio || horneando || empaquetando) {
             try {
-                //if (!vacio) {
+                if (!vacio) {
                     //Logs
-                    LogHandler.log(obtenerMarcaDeTiempo() + " - " + nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad + " galletas.");
+                    GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + nombreRepostero + " espera a que el " + id_horno + " esté vacío para añadir " + cantidad + " galletas.");
                     wait();
-                //}    
+                    
+                }    
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
@@ -52,8 +56,8 @@ class HiloHorno extends Thread {
             int desperdicio = cantidad - espacioDisponible;
             galletasHorno = capacidad;
             //Logs
-            LogHandler.log(obtenerMarcaDeTiempo() + " - " + nombreRepostero + " desperdicia " + desperdicio + " galletas al intentar llenar el " + id_horno);
-        } else {
+            GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + nombreRepostero + " desperdicia " + desperdicio + " galletas al intentar llenar el " + id_horno);
+            } else {
             galletasHorno += cantidad;
         }
         
@@ -100,11 +104,11 @@ class HiloHorno extends Thread {
     private void hornear() {
         try {
             //Logs
-            LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_horno + " está horneando " + capacidad + " galletas.");
+            GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + id_horno + " está horneando " + capacidad + " galletas.");
             Thread.sleep(8000);
             //Logs
-            LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_horno + " ha terminado de hornear " + capacidad + " galletas.");
-        } catch (InterruptedException ie) {
+            GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + id_horno + " ha terminado de hornear " + capacidad + " galletas.");
+                } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
     }
@@ -114,8 +118,8 @@ class HiloHorno extends Thread {
             try {
                 //if (galletasHorno == 0) {
                 //Logs
-                LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " espera para retirar " + cantidad + " galletas del " + id_horno);
-                /*} else if (horneando) {
+                GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " espera para retirar " + cantidad + " galletas del " + id_horno);
+                                /*} else if (horneando) {
                     System.out.println(id_empaquetador + " espera a que el " + id_horno + " termine de hornear. ");
                 }*/
                 wait();
@@ -124,8 +128,8 @@ class HiloHorno extends Thread {
             }
         }
         galletasHorno  -= cantidad;
-        LogHandler.log(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el " + id_horno);
-        
+        GeneradorLogs.log(obtenerMarcaDeTiempo() + " - " + id_empaquetador + " retira " + cantidad + " galletas. Quedan " + galletasHorno + " galletas en el " + id_horno);
+                
         if (galletasHorno == 0) {
             empaquetando = false;
             notifyAll();
