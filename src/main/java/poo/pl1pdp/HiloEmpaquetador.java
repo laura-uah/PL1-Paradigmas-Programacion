@@ -35,9 +35,12 @@ class HiloEmpaquetador extends Thread {
                             int tiempoRetirarGalletas = 500 + (int)(500*Math.random());
                             Thread.sleep(tiempoRetirarGalletas);
 
-                            if (numGalletasRecolectadas == numGalletasEmpaquetar) {
-                                System.out.println(id_empaquetador + " ha empaquetado un lote de " + numGalletasEmpaquetar + " galletas.");
+                            //Logs
+                            LogHandler.log(id_empaquetador + " retira " + cantidad + " galletas del " + horno.getId() + ". Total recolectadas: " + numGalletasRecolectadas);
 
+                            if (numGalletasRecolectadas == numGalletasEmpaquetar) {
+                                //Logs
+                                LogHandler.log(id_empaquetador + " ha empaquetado un lote de " + numGalletasEmpaquetar + " galletas.");
                                 synchronized (almacen) {
                                     almacen.almacenarGalletas(numGalletasEmpaquetar, id_empaquetador);
                                 }
